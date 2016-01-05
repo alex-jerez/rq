@@ -518,17 +518,20 @@ class Job(object):
         """Returns a string representation of the call, formatted as a regular
         Python function invocation statement.
         """
-        if self.func_name is None:
-            return None
+        try:
+            if self.func_name is None:
+                return None
 
-        arg_list = [as_text(repr(arg)) for arg in self.args]
+            arg_list = [as_text(repr(arg)) for arg in self.args]
 
-        kwargs = ['{0}={1}'.format(k, as_text(repr(v))) for k, v in self.kwargs.items()]
-        # Sort here because python 3.3 & 3.4 makes different call_string
-        arg_list += sorted(kwargs)
-        args = ', '.join(arg_list)
+            kwargs = ['{0}={1}'.format(k, as_text(repr(v))) for k, v in self.kwargs.items()]
+            # Sort here because python 3.3 & 3.4 makes different call_string
+            arg_list += sorted(kwargs)
+            args = ', '.join(arg_list)
 
-        return '{0}({1})'.format(self.func_name, args)
+            return '{0}({1})'.format(self.func_name, args)
+        except ValueError:
+            return "get_call_string() didnt work :("
 
     def cleanup(self, ttl=None, pipeline=None):
         """Prepare job for eventual deletion (if needed). This method is usually
